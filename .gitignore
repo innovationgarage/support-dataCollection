@@ -1,0 +1,5 @@
+*.pyc
+*.dep
+credentials.py
+tickets/*
+comments/*
