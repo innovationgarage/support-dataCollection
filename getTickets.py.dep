@@ -1,9 +1,0 @@
-from credentials import creds
-from zenpy import Zenpy
-zenpy_client = Zenpy(**creds)
-
-orgs = []
-for org in zenpy_client.organizations():
-    print(org.name, )
-    orgs.append({org.id:org.name})
-
