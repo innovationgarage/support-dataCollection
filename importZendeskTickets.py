@@ -3,26 +3,41 @@ import json
 from credentials import credentials
 import os
 
+def requests_get(*arg, **kw):
+    while True:
+        try:
+            response = requests.get(*arg, **kw)
+        except Exception as e:
+            print(e)
+            time.sleep(5)
+        else:
+            if response.status_code == 200:
+                return response
+            if response.status_code == 401:
+                raise Exception(response.content)
+            print("Error %s. Sleeping 5s" % (r.status_code,))
+            time.sleep(5)
+            
 def get_ticket(ticketid, cred=credentials):
     url = '{}/tickets/{}.json'.format(cred['url'], ticketid)
-    response = requests.get(url, auth=(cred['user'], cred['pwd']))
+    response = requests_get(url, auth=(cred['user'], cred['pwd']))
     return response.json()
     
 def get_all_orgs(cred=credentials):
     url = '{}/organizations.json'.format(cred['url'])
-    response = requests.get(url, auth=(cred['user'], cred['pwd']))
+    response = requests_get(url, auth=(cred['user'], cred['pwd']))
     return response.json()
 
 def get_org_tickets(orgid, url='', cred=credentials):
     if not url:
         url = '{}/organizations/{}/tickets.json'.format(cred['url'], orgid)
-    response = requests.get(url, auth=(cred['user'], cred['pwd']))
+    response = requests_get(url, auth=(cred['user'], cred['pwd']))
     return response.json()
 
 def get_ticket_comments(ticketid, url='', cred=credentials):
     if not url:
         url = '{}/tickets/{}/comments.json'.format(cred['url'], ticketid)
-    response = requests.get(url, auth=(cred['user'], cred['pwd']))
+    response = requests_get(url, auth=(cred['user'], cred['pwd']))
     return response.json()
     
 def get_all_tickets(tickets_path='tickets/', cred=credentials):
