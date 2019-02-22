@@ -1,5 +1,13 @@
 *.pyc
 *.dep
-credentials.py
-tickets/*
-comments/*
+*~
+*.msgpack
+tickets/credentials.py
+tickets/tickets/*
+tickets/comments/*
+tickets/env/*
+tickets/txt/*
+tickets/.ipynb_checkpoints/
+wiki/txt/*
+wiki/ids/*
+wiki/json/*
