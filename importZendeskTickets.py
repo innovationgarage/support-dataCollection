@@ -68,28 +68,27 @@ def get_all_comments(comments_path='comments/', tickets_path='tickets/', cred=cr
         orgid = filename.split('.json')[0]
         orgpath = os.path.join(comments_path, orgid)
         print(orgpath)
-        if os.path.exists(orgpath):
-            pass
-        else:
+        if not os.path.exists(orgpath):
             os.makedirs(orgpath)
-            with open(os.path.join(tickets_path, filename)) as f:
-                tickets = json.load(f)
-            ticket_ids = [ticket['id'] for ticket in tickets[0]]
-            for ticketid in ticket_ids:
-                print(ticketid)
-                ticket_comments = '{}.json'.format(ticketid)
-                comments = []
-                resp = get_ticket_comments(ticketid)
+        with open(os.path.join(tickets_path, filename)) as f:
+            tickets = json.load(f)
+        ticket_ids = [ticket['id'] for ticket in tickets[0]]
+        for ticketid in ticket_ids:
+            print(ticketid)
+            ticket_comments = '{}.json'.format(ticketid)
+            comments = []
+            resp = get_ticket_comments(ticketid)
+            comments.append(resp['comments'])
+            while resp['next_page']:
+                print(resp['next_page'])
+                resp = get_ticket_comments(ticketid, resp['next_page'])
                 comments.append(resp['comments'])
-                while resp['next_page']:
-                    print(resp['next_page'])
-                    resp = get_ticket_comments(ticketid, resp['next_page'])
-                    comments.append(resp['tickets'])
-                with open(os.path.join(orgpath, ticket_comments), 'w') as fout:
-                    json.dump(comments, fout)
-                    fout.write("\n")
-            print('All comments are exported!')
+            with open(os.path.join(orgpath, ticket_comments), 'w') as fout:
+                json.dump(comments, fout)
+                fout.write("\n")
+        print('All comments are exported!')
 
-            
-get_all_tickets()
-get_all_comments()
+
+if __name__ == "__main__":
+    get_all_tickets()
+    get_all_comments()
