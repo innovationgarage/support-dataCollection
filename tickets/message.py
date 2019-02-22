@@ -4,6 +4,7 @@ from nltk.corpus import stopwords
 from nltk import sent_tokenize
 from nltk.tokenize import word_tokenize
 from nltk.stem.porter import PorterStemmer
+from nltk import ngrams
 from collections import Counter
 
 class message(object):
@@ -48,6 +49,17 @@ class message(object):
         self.words = [word for word in tokens if word.isalpha()]
         return self.words
 
+    def split_into_ngrams(self, n):
+        Ngrams = ngrams(self.words, n)
+        return Ngrams
+
+    def get_top_ngrams(self, n, ntop=10):
+        Ngrams = self.split_into_ngrams(n)
+        ngram_count = Counter()
+        for ngram in Ngrams:
+            ngram_count[ngram] += 1
+        return ngram_count.most_common(ntop)
+        
     def stem_words(self, words):
         porter = PorterStemmer()
         self.stems = [porter.stem(word) for word in words]
