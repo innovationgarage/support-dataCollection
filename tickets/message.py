@@ -7,12 +7,18 @@ from nltk.stem.porter import PorterStemmer
 from collections import Counter
 
 class message(object):
-    def __init__(self, content):
+    def __init__(self, content, stop_words=set()):
         self.content = content
         self.clean = content.lower()
         english_stop_words = set(stopwords.words('english'))
         norwegian_stop_words = set(stopwords.words('norwegian'))
         self.stop_words = english_stop_words.union(norwegian_stop_words)
+	self.add_stop_words(stop_words)
+	self.cleanup()
+
+    @property
+    def dict(self):
+        return set(self.words)
 
     def add_stop_words(self, stop_words):
         self.stop_words = self.stop_words.union(set(stop_words))
@@ -35,14 +41,17 @@ class message(object):
         
     def split_into_sentences(self, msg):
         self.sentences = sent_tokenize(msg)
+	return self.sentences
 
     def split_into_words(self, msg):
         tokens = word_tokenize(msg)
         self.words = [word for word in tokens if word.isalpha()]
+	return self.words
 
     def stem_words(self, words):
         porter = PorterStemmer()
         self.stems = [porter.stem(word) for word in words]
+	return self.stems
 
     def cleanup(self):
         self.clean = re.sub('\n+', ' ', self.clean.lower())
@@ -59,3 +68,4 @@ class message(object):
         for word in self.words:
             word_count[word] += 1
         self.topwords = word_count.most_common(n)
+	return self.topwords
