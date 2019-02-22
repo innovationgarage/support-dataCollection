@@ -3,3 +3,8 @@
 credentials.py
 tickets/*
 comments/*
+*~
+env/*
+txt/*
+*.msgpack
+.ipynb_checkpoints/
