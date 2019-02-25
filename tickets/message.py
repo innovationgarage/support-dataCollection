@@ -16,7 +16,8 @@ class message(object):
         self.stop_words = english_stop_words.union(norwegian_stop_words)
         self.add_stop_words(stop_words)
         self.cleanup()
-
+        self.message = self.remove_previous_emails()
+        
     @property
     def dict(self):
         return set(self.words)
@@ -81,3 +82,10 @@ class message(object):
             word_count[word] += 1
         self.topwords = word_count.most_common(n)
         return self.topwords
+
+    def remove_previous_emails(self):
+        self.message = self.clean.split('-original message-')[0]
+        return self.message
+
+    def remove_email_header(self):
+        pass
