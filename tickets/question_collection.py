@@ -36,12 +36,26 @@ for org_ticket_file in os.listdir(tickets_path):
                 msg = message(ticket['description'])
                 email = zp.parse(msg.message)
                 incoming_messages.append(msg)
-                parsed_questions.append(email['body'])
-                
+                parsed_questions.append({ticket['id']:email['body']})
+
 with open('incoming_messages.pkl', 'wb') as fout:
     pickle.dump(incoming_messages, fout, pickle.HIGHEST_PROTOCOL)
 
 with open('parsed_questions.pkl', 'wb') as fout:
     pickle.dump(parsed_questions, fout, pickle.HIGHEST_PROTOCOL)
-    
-    
+
+df = pd.DataFrame(data={'id': [list(d.keys())[0] for d in parsed_questions], 'comment': [list(d.values())[0] for d in parsed_questions]})    
+df['len'] = df['comment'].apply(lambda x: len(x))
+df['release'] = df['comment'].apply(lambda x: True if "release" in x else False)
+df['password'] = df['comment'].apply(lambda x: True if "password" in x else False)
+df['account'] = df['comment'].apply(lambda x: True if "account" in x else False)
+
+df = df.loc[df['len']>15]
+df = df.loc[df['len']<708]
+
+"""
+What info do we need?/what recipe should they follow?
+* release attachment- same as unblock? (why are these not assigne to dualogbot?)
+* create account
+* reset password
+"""
