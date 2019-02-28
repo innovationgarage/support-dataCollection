@@ -28,6 +28,20 @@ def get_all_orgs(cred=credentials):
     response = requests_get(url, auth=(cred['user'], cred['pwd']))
     return response.json()
 
+def get_all_agents(users_path='agents.json', cred=credentials):
+    url = '{}/users.json?role[]=admin&role[]=agent'.format(cred['url'])
+    response = requests_get(url, auth=(cred['user'], cred['pwd']))
+    with open(users_path, 'w') as outfile:
+         json.dump(response.json(), outfile)
+    return response.json()
+
+def get_all_users(users_path='users.json', cred=credentials):
+    url = '{}/users.json'.format(cred['url'])
+    response = requests_get(url, auth=(cred['user'], cred['pwd']))
+    with open(users_path, 'w') as outfile:
+         json.dump(response.json(), outfile)
+    return response.json()
+
 def get_org_tickets(orgid, url='', cred=credentials):
     if not url:
         url = '{}/organizations/{}/tickets.json'.format(cred['url'], orgid)
@@ -88,7 +102,8 @@ def get_all_comments(comments_path='comments/', tickets_path='tickets/', cred=cr
                 fout.write("\n")
         print('All comments are exported!')
 
-
 if __name__ == "__main__":
-    get_all_tickets()
-    get_all_comments()
+    # get_all_tickets()
+    # get_all_comments()
+    get_all_agents()
+    get_all_users()
